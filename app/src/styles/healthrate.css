@@ -1,0 +1,134 @@
+/* ============================================================================
+   HealthRate.ca — bespoke "welcoming" design system, reconstructed.
+   The original spoke rendered against a compiled _ds bundle that was never
+   uploaded; this file rebuilds every token + helper it referenced, scoped
+   under html[data-site="healthrate"] so nothing leaks to the other tenants.
+   Navy structure + calm green accent + warm cream. Education only.
+   ========================================================================== */
+
+html[data-site="healthrate"] {
+  /* Brand */
+  --navy: #1B2A4A;
+  --navy-mid: #2C3E63;
+  --accent: #257F49;        /* green-600 — legible fill + link text */
+  --accent-strong: #1C6239;
+  --accent-soft: #E6F3EC;
+  --accent-line: #BFE3CD;
+  --accent-on: #ffffff;
+
+  /* Surfaces */
+  --white: #ffffff;
+  --cream: #F7F5EF;
+  --surface-sunk: #F0F2F4;
+
+  /* Ink */
+  --ink: #33414F;
+  --ink-strong: #17212F;
+  --ink-muted: #5D6B7A;
+  --ink-faint: #97A2AD;
+
+  /* Lines */
+  --border: #E5E8EB;
+  --border-soft: #EEF0F2;
+  --border-strong: #D2D8DE;
+
+  /* Status */
+  --success: #257F49;
+  --success-soft: #E6F3EC;
+  --error: #C2453B;
+  --warning: #B9772A;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  /* Shadow */
+  --shadow-soft: 0 1px 2px rgba(23,33,47,.05), 0 6px 20px -12px rgba(23,33,47,.18);
+  --shadow-lg: 0 18px 44px -20px rgba(23,33,47,.30);
+
+  /* Motion + measure */
+  --dur: .2s;
+  --measure-prose: 68ch;
+  --measure-prose-wide: 900px;
+  --container-page: 1140px;
+  --container-wide: 1280px;
+
+  /* Type — mapped to fonts loaded in layout.tsx (healthrate only). --font-sans
+     is inherited from the global Inter var (do not shadow it). */
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: var(--font-jet-mono), "JetBrains Mono", ui-monospace, monospace;
+  --font-wordmark: var(--font-newsreader), "Newsreader", Georgia, serif;
+
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-site="healthrate"] body { background: var(--white); color: var(--ink); }
+
+/* ── Shared utility classes the pages/kit reference directly ─────────────── */
+html[data-site="healthrate"] .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+html[data-site="healthrate"] .mono { font-family: var(--font-mono); }
+html[data-site="healthrate"] .tabular { font-variant-numeric: tabular-nums; }
+
+/* Long-form article prose */
+html[data-site="healthrate"] .prose { color: var(--ink); font-size: 17px; line-height: 1.7; }
+html[data-site="healthrate"] .prose h2 {
+  font-family: var(--font-display); font-weight: 800; font-size: 25px;
+  color: var(--ink-strong); letter-spacing: -.01em; margin: 34px 0 12px;
+}
+html[data-site="healthrate"] .prose p { margin: 0 0 16px; }
+html[data-site="healthrate"] .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+html[data-site="healthrate"] .prose strong { color: var(--ink-strong); font-weight: 700; }
+html[data-site="healthrate"] .prose ul { margin: 0 0 16px; padding-left: 20px; }
+html[data-site="healthrate"] .prose li { margin: 6px 0; }
+html[data-site="healthrate"] .prose blockquote {
+  margin: 22px 0; padding: 4px 0 4px 20px; border-left: 3px solid var(--accent-line);
+  color: var(--ink-muted); font-style: italic;
+}
+
+/* Focus visibility (accessibility) */
+html[data-site="healthrate"] a:focus-visible,
+html[data-site="healthrate"] button:focus-visible,
+html[data-site="healthrate"] input:focus-visible,
+html[data-site="healthrate"] select:focus-visible,
+html[data-site="healthrate"] textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── DS-kit grid helpers + responsive (ported from the original healthrate.css) */
+html[data-site="healthrate"] { scroll-behavior: smooth; }
+html[data-site="healthrate"] [dir="rtl"] { text-align: right; }
+
+@media (max-width: 900px) {
+  html[data-site="healthrate"] .rf-hero { grid-template-columns: 1fr !important; gap: 40px !important; }
+  html[data-site="healthrate"] .rf-3col { grid-template-columns: 1fr !important; }
+  html[data-site="healthrate"] .rf-4col { grid-template-columns: repeat(2, 1fr) !important; }
+  html[data-site="healthrate"] .hr-2col { grid-template-columns: 1fr !important; }
+  html[data-site="healthrate"] .hr-foot-grid { grid-template-columns: 1fr 1fr !important; }
+  html[data-site="healthrate"] .hr-head-utils { flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  html[data-site="healthrate"] .hr-foot-grid { grid-template-columns: 1fr !important; }
+  html[data-site="healthrate"] .rf-4col { grid-template-columns: 1fr !important; }
+}
+
+/* Entrance reveals — gated on JS (html.hr-js) + motion preference. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-site="healthrate"].hr-js .hr-reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
+  }
+  html[data-site="healthrate"].hr-js .hr-reveal.in { opacity: 1; transform: none; }
+}

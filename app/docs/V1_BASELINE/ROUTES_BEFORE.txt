@@ -1,0 +1,41 @@
+/[locale]/newcomers  [dynamic]
+/about
+/author/[slug]  [dynamic]
+/auto-insurance/[slug]  [dynamic]
+/auto-insurance
+/blog/[slug]  [dynamic]
+/blog/category/[id]  [dynamic]
+/blog/ontario-auto-reform-2026-guide
+/blog
+/business-insurance
+/coming-soon
+/contact
+/credit-cards/methodology
+/credit-cards
+/disclosures
+/for-brokers
+/get-quotes
+/glossary/[slug]  [dynamic]
+/glossary
+/health-insurance
+/home-insurance
+/investing
+/lab/[slug]  [dynamic]
+/lab
+/learn
+/legal
+/life-insurance
+/mortgages
+/newcomers
+/news-hub
+/
+/privacy
+/quote-results
+/rate-index
+/savings-calculator
+/studio/[[...tool]]  [dynamic]
+/tenant-insurance
+/terms
+/travel-insurance
+/whats-coming
+/withdraw-consent

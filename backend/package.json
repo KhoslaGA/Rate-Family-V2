@@ -1,0 +1,12 @@
+{
+  "name": "@ratefamily/backend",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "npm run build --workspace=@ratefamily/contracts && npm run build --workspace=@ratefamily/api",
+    "start": "npm run start --workspace=@ratefamily/api",
+    "dev": "npm run start:dev --workspace=@ratefamily/api",
+    "test": "npm run build && npm run test --workspace=@ratefamily/api"
+  }
+}

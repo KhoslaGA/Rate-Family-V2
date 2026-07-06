@@ -1,0 +1,798 @@
+@import "tailwindcss";
+
+/* LifeRate bespoke design system — fully scoped under html[data-site="liferate"]. */
+@import "./liferate.css";
+
+/* TermRates bespoke design system — fully scoped under html[data-site="termrates"]. */
+@import "./termrates.css";
+
+/* HealthRate bespoke design system — fully scoped under html[data-site="healthrate"]. */
+@import "./healthrate.css";
+
+@source "../../src";
+
+/* ────────────────────────────────────────────────────────────────────────
+   Theme tokens (Tailwind v4 @theme — generates utility classes from these)
+
+   Type system:    Poppins for display + headings, Inter for body + UI.
+                   Geometric sans system, Rates.ca-style. Loaded via
+                   next/font/google in layout.tsx and exposed as
+                   --font-display and --font-sans CSS vars consumed here.
+
+   Color system:   Cream (#FBF7EE) and white backgrounds, navy primary,
+                   teal secondary accent, amber for callouts, ink (warm
+                   near-black) for body text.
+
+   Font sizes:     16/1.6 body, 18/1.6 lead, headings 18–48px.
+   ──────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Font families — Poppins (display) + Inter (body). System fallbacks
+     ensure pages render if next/font fails to load. */
+  --font-display: var(--font-display), 'Inter', -apple-system, sans-serif;
+  --font-body: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* Aliases — `style={{ fontFamily: 'var(--font-serif)' }}` references
+     in 80+ components now resolve to Poppins. Pending a follow-up sweep
+     to rename callsites. */
+  --font-serif: var(--font-display), 'Inter', -apple-system, sans-serif;
+  --font-heading: var(--font-display), 'Inter', -apple-system, sans-serif;
+
+  /* Brand colors — single source of truth for utility classes
+     (text-cream, bg-navy, text-ink, border-amber, etc.) */
+  --color-cream: #FBF7EE;          /* editorial canvas */
+  --color-paper: #FBF7EE;          /* alias for cream — backward compat with Phase 1 */
+  --color-white: #FFFFFF;          /* commerce canvas */
+  --color-ink: #1F2024;            /* warm near-black body text */
+  --color-ink-strong: #121214;     /* slightly darker for headings */
+  --color-ink-muted: #5C5C66;      /* eyebrows, metadata, fine print */
+  --color-mute: #5C5C66;           /* alias for ink-muted — backward compat */
+  --color-navy: #1B2A4A;
+  --color-navy-dark: #0F1A33;
+  --color-teal: #0A7E8C;           /* demoted to secondary accent */
+  --color-teal-light: #0d9aa8;
+  --color-teal-hover: #0d9aa8;
+  --color-teal-dark: #086874;
+  --color-amber: #B45309;          /* replaces muddy gold — disclosure callouts + site eyebrow */
+  --color-canada-red: #C8102E;     /* optional single-accent moment */
+
+  /* Multi-tenant per-site accent. The CORE palette above is fixed network-wide;
+     only this swaps per site. `--site-accent` is set authoritatively inline on
+     <html> by the root layout (from src/site/config.ts); the [data-site] rules
+     below are the static fallback. Use bg-accent / text-accent / border-accent
+     on per-site CTAs and active states so they pick up the site color. */
+  --color-accent: var(--site-accent, #B45309);
+  --color-border: rgba(31, 32, 36, 0.10);
+  --color-border-soft: rgba(31, 32, 36, 0.06);
+  /* Gold token DROPPED. Existing usages get amber (disclosure) or
+     navy/teal (decorative) per the typography brief. */
+
+  /* Existing brand-palette ramps preserved for backward compat with
+     pre-typography components. Will be deprecated in a follow-up sweep. */
+  --color-primary-50: #f0fdfb;
+  --color-primary-100: #ccf9f5;
+  --color-primary-200: #99f1ed;
+  --color-primary-300: #5ce8e3;
+  --color-primary-400: #2dd9d5;
+  --color-primary-500: #0A7E8C;
+  --color-primary-600: #087a87;
+  --color-primary-700: #066670;
+  --color-primary-800: #055359;
+  --color-primary-900: #034042;
+
+  --color-secondary-50: #f0f2f7;
+  --color-secondary-100: #d4dce8;
+  --color-secondary-200: #a9b9d3;
+  --color-secondary-300: #7e96be;
+  --color-secondary-400: #5373a7;
+  --color-secondary-500: #2d4670;
+  --color-secondary-600: #1B2A4A;
+  --color-secondary-700: #141f38;
+  --color-secondary-800: #0f1729;
+  --color-secondary-900: #0a101a;
+
+  --color-accent-50: #fffbeb;
+  --color-accent-100: #fef3c7;
+  --color-accent-200: #fde68a;
+  --color-accent-300: #fcd34d;
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
+  --color-accent-700: #b45309;     /* matches the new amber */
+  --color-accent-800: #92400e;
+  --color-accent-900: #78350f;
+
+  /* Type scale — geometric sans, Rates.ca-style */
+  --text-hero-h1: 48px;
+  --text-hero-h1--line-height: 1.15;
+  --text-hero-h1--font-weight: 700;
+
+  --text-h1: 36px;
+  --text-h1--line-height: 1.2;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 28px;
+  --text-h2--line-height: 1.25;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 22px;
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 600;
+
+  --text-h4: 18px;
+  --text-h4--line-height: 1.4;
+  --text-h4--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 400;
+
+  --text-small: 14px;
+  --text-small--line-height: 1.5;
+  --text-small--font-weight: 400;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 500;
+
+  --text-btn: 16px;
+  --text-btn--line-height: 1.4;
+  --text-btn--font-weight: 600;
+  --text-btn--letter-spacing: 0.2px;
+
+  /* Reading widths */
+  --container-prose: 680px;        /* Wirecutter / FT / NYT measure */
+  --container-prose-wide: 760px;   /* tables, comparison grids */
+  --container-page: 1200px;        /* commerce hero, homepage */
+
+  /* Section rhythm — generates spacing utilities */
+  --spacing-section: 48px;
+  --spacing-section-lg: 96px;
+  --spacing-paragraph: 32px;
+  --spacing-paragraph-sm: 24px;
+
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.10);
+
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.6s ease-out;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Multi-tenant per-site accent (fallback layer)
+
+   The root layout sets `--site-accent` inline on <html> from src/site/config.ts,
+   so it is always correct at first paint. These [data-site] rules are the
+   static fallback if the inline value is ever absent. Core palette is fixed;
+   only the accent varies. `--color-accent` (in @theme) reads this var, which is
+   what makes bg-accent / text-accent / border-accent site-aware.
+   ──────────────────────────────────────────────────────────────────────── */
+:root            { --site-accent: #B45309; } /* toprates amber (default) */
+[data-site="toprates"]   { --site-accent: #B45309; }
+/* ────────────────────────────────────────────────────────────────────────
+   TermRates — steel skin. PROVISIONAL (DESIGN-TOKEN-CONTRACT.md defers the real
+   values to "when its token file ships"). Ramp generated around the contract
+   primary #4A6FA5; grounds/ink are reasonable neutrals; FONTS pending (contract:
+   "display/body per synced system"). Swap values when the steel token file lands.
+   ──────────────────────────────────────────────────────────────────────── */
+html[data-site="termrates"] {
+  --steel-50: #F0F3F8;  --steel-100: #E0E7F1; --steel-200: #C2CFE3; --steel-300: #9DB0D0;
+  --steel-400: #7189B8; --steel-500: #4A6FA5; --steel-600: #3D5A85; --steel-700: #2E4568;
+  --steel-900: #1A2740;
+  --cream: #F5F7FA;  --paper: #FFFFFF;  --sand: #EAEEF3;
+  --ink: #1E2A3A;  --ink-soft: #55606E;  --ink-mute: #8791A0;
+  --line: #E3E8EF;  --line-2: #D2DAE4;
+  /* steel-600: legible as both fill and link text on paper (invariants). */
+  --site-accent: #3D5A85;
+  --color-cream: var(--cream);  --color-paper: var(--paper);  --color-white: var(--paper);
+  --color-ink: var(--ink);  --color-ink-strong: var(--ink);  --color-ink-muted: var(--ink-mute);
+  --color-mute: var(--ink-mute);  --color-border: var(--line);  --color-border-soft: var(--line-2);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   HealthRate — green skin. PROVISIONAL (see note above). Ramp generated around
+   the contract primary #2E9E5B; FONTS pending (contract also flags bilingual
+   Punjabi/Hindi glyph coverage — confirm the synced body font or add a fallback).
+   ──────────────────────────────────────────────────────────────────────── */
+html[data-site="healthrate"] {
+  --green-50: #ECF7F0;  --green-100: #D6EFE0; --green-200: #AEDEC2; --green-300: #7FC79E;
+  --green-400: #52B37B; --green-500: #2E9E5B; --green-600: #257F49; --green-700: #1C6338;
+  --green-900: #0E3A20;
+  --cream: #F4FAF6;  --paper: #FFFFFF;  --sand: #E9F2EC;
+  --ink: #16241C;  --ink-soft: #4E5B53;  --ink-mute: #808D85;
+  --line: #E2ECE6;  --line-2: #D0DED6;
+  /* green-600: #2E9E5B (primary) fails >=4.5:1 as link text on paper; #257F49 passes. */
+  --site-accent: #257F49;
+  --color-cream: var(--cream);  --color-paper: var(--paper);  --color-white: var(--paper);
+  --color-ink: var(--ink);  --color-ink-strong: var(--ink);  --color-ink-muted: var(--ink-mute);
+  --color-mute: var(--ink-mute);  --color-border: var(--line);  --color-border-soft: var(--line-2);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   LifeRate — bespoke WARM ROSEWOOD skin (per DESIGN-TOKEN-CONTRACT.md at repo root).
+
+   These are the design's finalized *provisional* values — the design, not a
+   placeholder — isolated to this one selector so a real synced shade-nudge is
+   a drop-in (swap values, names stay). `html[...]` specificity guarantees the
+   overrides win over @theme :root and the next/font variable classes.
+
+   NOT tokens (held for real-world values): editorial byline ([BYLINE TBD]) and
+   the entity-disclosure footer string — do not encode here.
+   ──────────────────────────────────────────────────────────────────────── */
+html[data-site="liferate"] {
+  /* warm rosewood/burgundy ramp (DESIGN-TOKEN-CONTRACT.md — sage was dropped:
+     it read as a PolicyMe clone, and sage/green belongs to HealthRate). Ramp is
+     --brand-* (hue-agnostic) per the contract rename. */
+  --brand-50: #FBEFEE;  --brand-100: #F4E1E1; --brand-200: #E7C9CB; --brand-300: #D0A2A6;
+  --brand-400: #B4707A; --brand-500: #8E4A56; --brand-600: #733A46; --brand-700: #572B35;
+  --brand-900: #2C1820;
+  /* grounds (ivory) */
+  --cream: #FBF6F2;  --paper: #FFFFFF;  --sand: #F5EAE5;
+  /* ink + lines */
+  --ink: #2A2124;  --ink-soft: #6B5A5E;  --ink-mute: #9E8C90;
+  --line: #EDE3DE;  --line-2: #E0D1CB;
+  /* fonts (families loaded in layout.tsx via next/font/google) */
+  --font-display: var(--font-newsreader), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-public-sans), system-ui, -apple-system, sans-serif;
+
+  /* ── bridge to the shared token system so existing components adopt the skin ── */
+  /* brand-500 primary #8E4A56 is dark enough to pass BOTH invariants on paper
+     (≈6.4:1 as text, ≈6.4:1 as fill with white label), so the single shared
+     --site-accent can use the primary directly. Bespoke pages may use
+     --brand-600 for hover/ink. */
+  --site-accent: #8E4A56;
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-white: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink);
+  --color-ink-muted: var(--ink-mute);
+  --color-mute: var(--ink-mute);
+  --color-border: var(--line);
+  --color-border-soft: var(--line-2);
+  --font-sans: var(--font-public-sans), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-heading: var(--font-newsreader), Georgia, serif;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   Dual-template system (Step 4c)
+
+   Default: editorial template — cream background, serif body, 680px
+   measure, 19px/1.6 leading. Applied site-wide.
+
+   Override: commerce template — pure white background, sans body,
+   1200px container, 17px/1.55 leading. Applied to <body data-template=
+   "commerce"> on /life-insurance subtree only via app/life-insurance/
+   layout.tsx (Step 4e).
+
+   The CSS-variable scoping means components don't need to know which
+   template they're in — they just read --bg, --measure, --body-font.
+   ──────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #FBF7EE;
+  --measure: 680px;
+  --body-font: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --body-size: 16px;
+  --body-leading: 1.6;
+}
+
+[data-template="commerce"] {
+  --bg: #FFFFFF;
+  --measure: 1200px;
+}
+
+@keyframes carrierMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── MegaNav desktop/mobile responsive switch ── */
+.meganav-desktop { display: block; }
+.meganav-mobile { display: none; }
+@media (max-width: 1024px) {
+  .meganav-desktop { display: none; }
+  .meganav-mobile { display: block; }
+}
+
+/* ── Homepage v2 layout (CSS-controlled so media queries can override) ── */
+.hero-grid-v2 {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-h1-v2 {
+  /* Homepage prototype: Outfit Black 900 with tight tracking */
+  font-family: var(--font-outfit), 'Outfit', -apple-system, sans-serif;
+  font-weight: 900;
+  font-size: 64px;
+  letter-spacing: -2.2px;
+  line-height: 1.02;
+  color: #fff;
+  margin: 0;
+}
+.hero-form-v2 {
+  display: flex;
+  gap: 10px;
+  max-width: 460px;
+}
+.stats-grid-v2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+}
+.carrier-row-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+  animation: carrierMarquee 50s linear infinite;
+}
+
+/* ── Rate ticker marquee ── */
+@keyframes rateTickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.rate-ticker-track {
+  animation: rateTickerScroll 60s linear infinite;
+}
+
+/* ── Articles featured + sidebar grid ── */
+.articles-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 28px;
+  align-items: stretch;
+}
+
+/* ── ChatFAQ sidebar + chat grid ── */
+.chat-faq-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+@keyframes chatFaqTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1; }
+}
+.chat-faq-dot {
+  animation: chatFaqTyping 1s infinite;
+}
+
+/* ── FinalCTA layout ── */
+.final-cta-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+/* ── Testimonials 3-col grid (pre-launch preview) ── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+@media (max-width: 1024px) {
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .testimonials-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Homepage v2 responsive — tablet ≤1024px ── */
+@media (max-width: 1024px) {
+  .hero-grid-v2 {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .hero-h1-v2 {
+    font-size: 44px;
+    letter-spacing: -1.4px;
+  }
+  .stats-grid-v2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid-v2 > div:nth-child(2) {
+    border-right: none !important;
+  }
+  .stats-grid-v2 > div:nth-child(1),
+  .stats-grid-v2 > div:nth-child(2) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .articles-grid,
+  .chat-faq-grid,
+  .final-cta-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .final-cta-bo {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+
+/* ── Homepage v2 responsive — mobile ≤640px ── */
+@media (max-width: 640px) {
+  .hero-h1-v2 {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+  .hero-form-v2 {
+    flex-direction: column;
+  }
+  .hero-form-v2 input,
+  .hero-form-v2 button {
+    width: 100% !important;
+    justify-content: center;
+  }
+  .stats-grid-v2 > div {
+    padding: 36px 14px !important;
+  }
+  .stats-grid-v2 > div > div.stats-num {
+    font-size: 32px !important;
+  }
+  .carrier-row-track {
+    gap: 12px;
+    animation-duration: 35s;
+  }
+}
+
+/* ── Base styles ── */
+html {
+  scroll-behavior: smooth;
+  /* Safety net against accidental horizontal overflow caused by an
+     overlong word, a fixed-px wrapper, or a stray transform. NOT the
+     primary fix — root-cause offenders must still be removed. Without
+     this guard, any one offender produces the "phantom side strip"
+     symptom across the entire site. */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  color: #1F2024;
+  font-family: var(--body-font);
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  /* Tabular figures globally — rate tables and currency render aligned */
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  /* Pair with the html guard — keeps body inside the viewport even if
+     a child requests a width larger than 100%. */
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display), 'Inter', -apple-system, sans-serif;
+  color: #121214;
+  /* Disable tabular figures for headings — proportional reads better */
+  font-feature-settings: 'tnum' 0;
+}
+
+/* Editorial article body — apply via className="prose" or use directly */
+.prose {
+  max-width: var(--measure);
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  color: #1F2024;
+}
+.prose p + p { margin-top: 24px; }
+.prose h2 { margin-top: 48px; margin-bottom: 16px; }
+.prose h3 { margin-top: 32px; margin-bottom: 12px; }
+.prose ul, .prose ol { margin: 16px 0; padding-left: 24px; }
+.prose li + li { margin-top: 8px; }
+.prose a { color: #0A7E8C; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Tabular figures — opt-in for any component that doesn't want body default */
+.tabular,
+table.rates,
+.currency {
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* ── Custom scrollbar - Teal theme ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0A7E8C;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #087a87;
+}
+
+/* ── Selection color ── */
+::selection {
+  background-color: #0A7E8C;
+  color: white;
+}
+
+/* ── Responsive nav ── */
+.desktop-nav {
+  display: none;
+}
+.mobile-nav {
+  display: block;
+}
+@media (min-width: 1024px) {
+  .desktop-nav {
+    display: block;
+  }
+  .mobile-nav {
+    display: none;
+  }
+}
+
+/* ── CTA button hover ── */
+.cta-btn {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, background 0.18s ease;
+  will-change: transform;
+}
+.cta-btn svg {
+  transition: transform 0.2s ease;
+}
+.cta-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(10, 126, 140, 0.55);
+  filter: brightness(1.06);
+}
+.cta-btn:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+.cta-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px -6px rgba(10, 126, 140, 0.45);
+}
+/* Back-arrow variant — nudge the arrow leftward on hover */
+.cta-btn-back:hover:not(:disabled) svg {
+  transform: translateX(-3px);
+}
+
+/* Soft variant — for transparent/outlined secondary buttons.
+   Mild teal tint fill + border + text color shift, no lift. */
+.cta-btn-soft {
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.cta-btn-soft:hover:not(:disabled) {
+  background: rgba(10, 126, 140, 0.07) !important;
+  border-color: rgba(10, 126, 140, 0.35) !important;
+  color: #0A7E8C !important;
+}
+
+/* ── TrustBar responsive grid ── */
+.trust-bar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+@media (max-width: 768px) {
+  .trust-bar-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Editorial homepage redesign (home-editorial-redesign branch)
+   Fraunces + Hanken Grotesk register. Scoped to ed-* class names so
+   it doesn't bleed into the rest of the site.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Buttons */
+.ed-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-hanken), 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  background: #E0A227;
+  color: #0B2545;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(224,162,39,.35);
+  transition: transform .15s, box-shadow .15s, background .15s;
+  min-height: 48px;
+  white-space: nowrap;
+}
+.ed-btn-primary:hover {
+  background: #F08A4B;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(240,138,75,.4);
+}
+.ed-btn-primary:disabled { opacity: .7; cursor: wait; transform: none; }
+
+.ed-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-hanken), 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: transparent;
+  color: #0B2545;
+  text-decoration: none;
+  border: none;
+}
+.ed-btn-ghost:hover { color: #F08A4B; }
+
+.ed-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-hanken), 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: transparent;
+  border: 1.5px solid #E5E7EB;
+  color: #0B2545;
+  text-decoration: none;
+  transition: border .15s, color .15s;
+}
+.ed-btn-outline:hover { border-color: #E0A227; color: #F08A4B; }
+
+/* Hero grid */
+.ed-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 56px;
+  align-items: center;
+}
+.ed-hero-visual { position: relative; }
+
+/* Floating cards on hero photo */
+.ed-float {
+  position: absolute;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(11,37,69,.08), 0 24px 60px rgba(11,37,69,.12);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: ed-float 6s ease-in-out infinite;
+}
+.ed-float-1 { top: 30px; left: -30px; }
+.ed-float-2 { bottom: 46px; right: -26px; animation-delay: 3s; }
+@keyframes ed-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* 3-tier strip */
+.ed-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* Life funnel */
+.ed-funnel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 54px;
+  position: relative;
+}
+
+/* Learn module 4-col */
+.ed-learn-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+.ed-learn-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(11,37,69,.08), 0 24px 60px rgba(11,37,69,.12);
+}
+
+/* Compare module 3-col */
+.ed-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+/* Trust panel 4-col */
+.ed-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Money box */
+.ed-money-box {
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  gap: 48px;
+  align-items: center;
+}
+.ed-money-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+/* Mega panels positioning fix */
+.ed-mega-inner { box-sizing: border-box; }
+
+/* Hide mobile menu trigger on desktop */
+.ed-hamburger { display: none; }
+
+/* Mid-desktop (1240–1300px): tighten nav items so 7 labels + logo + CTA
+   fit inside the 1400-max container without the nav strip overflowing
+   its grid column into the logo/CTA cells. */
+@media (max-width: 1300px) {
+  .ed-nav-btn {
+    font-size: 13px !important;
+    padding: 7px 8px !important;
+  }
+}
+
+/* Below 1240px the 7-item strip can no longer fit cleanly even when
+   tightened — swap to the hamburger menu. Previously this fired at
+   1100px which still left the nav visibly overflowing past the
+   logo/CTA cells at 1100–1240px viewports (e.g. 1109px landscape
+   tablets and narrow laptops). */
+@media (max-width: 1240px) {
+  .ed-nav-links { display: none !important; }
+  .ed-hamburger { display: block !important; }
+  .ed-mega-panel { display: none !important; }
+}
+
+@media (max-width: 980px) {
+  .ed-hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .ed-hero-visual { max-width: 420px; margin: 0 auto; }
+  .ed-tier-grid { grid-template-columns: 1fr; }
+  .ed-funnel { padding: 36px 28px; }
+  .ed-funnel-grid { grid-template-columns: 1fr; gap: 36px; }
+  .ed-learn-grid { grid-template-columns: repeat(2, 1fr); }
+  .ed-compare-grid { grid-template-columns: 1fr; }
+  .ed-trust-grid { grid-template-columns: repeat(2, 1fr); }
+  .ed-money-box { grid-template-columns: 1fr; padding: 32px !important; }
+  .ed-money-cols { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  .ed-learn-grid { grid-template-columns: 1fr; }
+  .ed-trust-grid { grid-template-columns: 1fr; }
+  .ed-money-cols { grid-template-columns: 1fr; }
+  .ed-float { display: none; }
+}

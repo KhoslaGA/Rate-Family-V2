@@ -1,0 +1,59 @@
+{
+  "newcomers": {
+    "meta": {
+      "title": "Insurance for newcomers to Canada | TopRates.ca",
+      "description": "A plain-English guide to Canadian insurance for new permanent residents and international students. Auto, home, life, and health coverage explained — with what you actually need in your first year."
+    },
+    "hero": {
+      "eyebrow": "FOR NEW CANADIANS",
+      "title": "Insurance in Canada, explained from day one.",
+      "subtitle": "If you've just landed in Canada — as a permanent resident, international student, or work-permit holder — this is the short, honest version of what insurance you need, what you can skip, and how to avoid the most common first-year mistakes."
+    },
+    "intro": {
+      "heading": "The first-year shortlist",
+      "body": "You don't need every type of insurance the day you arrive. You do need three things sorted within the first 90 days: provincial health enrolment, auto coverage if you'll be driving, and tenant insurance if you're renting. Everything else can wait until your situation is more settled."
+    },
+    "sections": [
+      {
+        "title": "Health coverage in your first 90 days",
+        "body": "Most provinces (Ontario, BC, Quebec) have a 90-day waiting period before government health coverage starts. During that window, you need private interim coverage to avoid catastrophic medical bills. International students usually get this through their university's mandatory plan; permanent residents and work-permit holders need to buy it separately."
+      },
+      {
+        "title": "Auto insurance — the licensing trap",
+        "body": "Your foreign driving record almost never transfers to Canadian insurers. That means you'll be quoted as a brand-new driver — often 2–3× the rate of a long-time Canadian driver — even if you've been driving for 20 years abroad. Two things help: getting your foreign licence formally translated and submitted, and asking about new-Canadian rate programs (some carriers offer them)."
+      },
+      {
+        "title": "Tenant insurance — required, often forgotten",
+        "body": "Most Canadian landlords require tenant (renter's) insurance as a condition of the lease. It covers your belongings, your liability if you cause damage to the building, and additional living expenses if you have to move out temporarily. It's typically inexpensive but missing it can mean losing your security deposit or being denied a rental."
+      },
+      {
+        "title": "Life insurance — wait, then shop",
+        "body": "Life insurance is usually the cheapest it will ever be when you're young and healthy, but you don't need it your first month. Get your job and family situation stable, then buy a simple term-life policy that matches your dependents and debts. Avoid the mortgage-life-insurance the bank sells you — independent term life is usually a better deal."
+      },
+      {
+        "title": "Credit history — start building immediately",
+        "body": "Insurance quotes (and a lot else) get worse without a Canadian credit history. The fastest fix is a secured credit card from your bank — you deposit $500–$1000 as collateral, charge small amounts to it, pay in full every month. After 6 months you'll have a credit score; after 12 you'll be eligible for normal credit cards."
+      }
+    ],
+    "cta": {
+      "title": "Talk to someone who can help",
+      "body": "Insurance terms are dense, every province is different, and the wrong choice in your first year can cost you for years. TopRates.ca's referral partner KLC Group Canada Inc. is LLQP-licensed and works with new Canadians regularly.",
+      "primary": "Get a free consultation",
+      "primaryHref": "/contact?topic=newcomers"
+    },
+    "faqs": [
+      {
+        "q": "I just arrived — what's the absolute minimum insurance I need this week?",
+        "a": "Interim health coverage if you're in a province with a waiting period. Everything else can wait days or weeks while you set up SIN, banking, and housing."
+      },
+      {
+        "q": "Will my foreign driving experience count?",
+        "a": "Usually only partially, and only if you provide formal proof (a letter of experience from your previous insurer, sometimes translated and notarized). Some carriers offer specific new-Canadian programs that recognize foreign driving history — ask explicitly."
+      },
+      {
+        "q": "I'm an international student — do I need to buy my own health insurance?",
+        "a": "Most Canadian universities enrol you automatically in a mandatory health plan (you'll see it as a line item on your tuition). Read the coverage limits — you may want to add a top-up if you have ongoing medical needs."
+      }
+    ]
+  }
+}
