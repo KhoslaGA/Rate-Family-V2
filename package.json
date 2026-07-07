@@ -14,7 +14,7 @@
     "build:backend": "npm run build:contracts && npm run build --workspace=@ratefamily/api",
     "build:app": "cd app && npm run build",
     "dev": "concurrently -n api,web -c cyan,magenta \"npm:dev:backend\" \"npm:dev:app\"",
-    "dev:backend": "npm run build:contracts && npm run dev --workspace=@ratefamily/api",
+    "dev:backend": "npm run build:contracts && npm run start:dev --workspace=@ratefamily/api",
     "dev:app": "cd app && cross-env NEXT_PUBLIC_API_BASE=http://localhost:3001 next dev -p 3000",
     "start:backend": "npm run start --workspace=@ratefamily/api",
     "test": "npm run test:backend",

@@ -9,7 +9,7 @@
  * after the licensing gates — the frontend never sees the difference.
  */
 
-export type Vertical = 'life' | 'auto' | 'home' | 'health';
+export type Vertical = 'life' | 'auto' | 'home' | 'health' | 'mortgage';
 
 export type LifeTerm = '10' | '20' | '30' | 'perm';
 export type ProvinceCode =
@@ -102,4 +102,40 @@ export interface CarrierAdapter {
   quoteLife(req: LifeQuoteRequest): Promise<LifeQuoteResponse>;
   quoteAuto(req: AutoQuoteRequest): Promise<AutoQuoteResponse>;
   quoteHealth(req: HealthQuoteRequest): Promise<HealthQuoteResponse>;
+  quoteMortgage(req: MortgageQuoteRequest): Promise<MortgageQuoteResponse>;
+}
+
+/* ── MORTGAGE ──────────────────────────────────────────────────────────── */
+export type MortgageRateType = 'fixed' | 'variable';
+export type MortgageTerm = '3' | '5' | '10';
+
+export interface MortgageQuoteRequest {
+  purpose: 'buy' | 'renew' | 'refinance';
+  rateType: MortgageRateType;
+  term: MortgageTerm;
+  propertyPrice: number;
+  downPayment: number;
+  amortizationYears: number;
+  prov?: ProvinceCode;
+}
+
+export interface MortgageLenderRow {
+  lender: string;
+  channel: 'Digital' | 'Broker' | 'Big Six';
+  ratePct: number;
+  monthlyPayment: number;
+}
+
+export interface MortgageQuoteResponse {
+  mock: true;
+  rates_indicative_only: true;
+  vertical: 'mortgage';
+  loanAmount: number;
+  ltvPct: number;
+  insured: boolean;
+  insurancePremium: number;
+  principal: number;          // loan + insurance premium
+  stressTestRatePct: number;  // qualifying rate (B-20)
+  quotes: MortgageLenderRow[]; // sorted best (lowest rate) first
+  best: MortgageLenderRow | null;
 }

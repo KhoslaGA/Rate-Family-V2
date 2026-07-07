@@ -25,6 +25,8 @@ import type {
   AutoQuoteResponse,
   HealthQuoteRequest,
   HealthQuoteResponse,
+  MortgageQuoteRequest,
+  MortgageQuoteResponse,
   LeadRequest,
   LeadResponse,
   MatchRequest,
@@ -122,6 +124,9 @@ export function quoteAuto(body: AutoQuoteRequest, scenario?: string): Promise<Au
 }
 export function quoteHealth(body: HealthQuoteRequest, scenario?: string): Promise<HealthQuoteResponse> {
   return req<HealthQuoteResponse>('/v1/quotes/health', { method: 'POST', body: JSON.stringify(body) }, scenario);
+}
+export function quoteMortgage(body: MortgageQuoteRequest, scenario?: string): Promise<MortgageQuoteResponse> {
+  return req<MortgageQuoteResponse>('/v1/quotes/mortgage', { method: 'POST', body: JSON.stringify(body) }, scenario);
 }
 
 /* ── Leads ─────────────────────────────────────────────────────────────── */

@@ -396,3 +396,7 @@ html[data-site="termrates"] {
     .tr-board-row .term { display: none; }
   }
 }
+
+/* quoter loading skeleton pulse */
+@keyframes pulse { 0%,100% { opacity: .4; } 50% { opacity: .7; } }
+@media (prefers-reduced-motion: reduce) { @keyframes pulse { 0%,100% { opacity: .5; } } }

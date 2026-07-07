@@ -7,6 +7,9 @@ import {
   AutoQuoteResponse,
   HealthQuoteRequest,
   HealthQuoteResponse,
+  MortgageQuoteRequest,
+  MortgageQuoteResponse,
+  MortgageLenderRow,
   CarrierQuote,
   CarrierDecline,
   AutoCarrierRow,
@@ -40,6 +43,22 @@ const AUTO_CONSERVATIVE = new Set(['Aviva', 'Travelers', 'Co-operators']);
 
 const HEALTH_CARRIERS = ['GMS', 'Manulife', '21st Century', 'Ingle', 'TuGo', 'Destination'];
 const HEALTH_PREX_EXCLUDE = new Set(['Manulife', 'TuGo', 'Destination']);
+
+/** Mortgage lender panel: deterministic per-lender spread off a base rate.
+ * Explicit placeholder data — never treat as real lender pricing. */
+const MORTGAGE_LENDERS: { lender: string; channel: MortgageLenderRow['channel']; off: number }[] = [
+  { lender: 'Nesto', channel: 'Digital', off: 0.0 },
+  { lender: 'MCAP', channel: 'Broker', off: 0.1 },
+  { lender: 'First National', channel: 'Broker', off: 0.13 },
+  { lender: 'TD Bank', channel: 'Big Six', off: 0.7 },
+  { lender: 'RBC', channel: 'Big Six', off: 0.75 },
+  { lender: 'CIBC', channel: 'Big Six', off: 0.72 },
+];
+// base rate per (term-rateType), illustrative
+const MORTGAGE_BASE: Record<string, number> = {
+  '3-fixed': 4.24, '5-fixed': 4.09, '10-fixed': 5.29,
+  '3-variable': 5.2, '5-variable': 4.95, '10-variable': 6.1,
+};
 
 @Injectable()
 export class MockCarrierAdapter implements CarrierAdapter {
@@ -114,4 +133,58 @@ export class MockCarrierAdapter implements CarrierAdapter {
     });
     return { mock: true, rates_indicative_only: true, vertical: 'health', quotes: rows };
   }
+
+  async quoteMortgage(req: MortgageQuoteRequest): Promise<MortgageQuoteResponse> {
+    const price = Math.max(req.propertyPrice, 0);
+    const down = Math.max(req.downPayment, 0);
+    const loan = Math.max(price - down, 0);
+    const ltv = price > 0 ? Math.round((loan / price) * 100) : 0;
+    const insured = ltv > 80;
+
+    // CMHC-style premium tiers (illustrative): higher LTV → higher premium
+    const premiumRate = !insured ? 0 : ltv >= 95 ? 0.04 : ltv >= 90 ? 0.031 : 0.028;
+    const insurancePremium = Math.round(loan * premiumRate);
+    const principal = loan + insurancePremium;
+
+    const base = MORTGAGE_BASE[`${req.term}-${req.rateType}`] ?? 5.0;
+    // B-20 stress test: qualify at the greater of contract+2% or 5.25%
+    const stressTestRatePct = Math.max(base + 2, 5.25);
+
+    const amortMonths = Math.max(req.amortizationYears, 5) * 12;
+
+    const rows: MortgageLenderRow[] = MORTGAGE_LENDERS.map(({ lender, channel, off }) => {
+      // deterministic micro-jitter per lender/term so panels aren't identical
+      const seed = `mortgage:${lender}:${req.term}:${req.rateType}:${loan}`;
+      const jitter = (seededHash(seed) % 7) / 100; // 0–0.06
+      const ratePct = Math.round((base + off + jitter) * 100) / 100;
+      const monthlyPayment = amortizedPayment(principal, ratePct, amortMonths);
+      return { lender, channel, ratePct, monthlyPayment };
+    });
+
+    rows.sort((a, b) => a.ratePct - b.ratePct);
+
+    return {
+      mock: true,
+      rates_indicative_only: true,
+      vertical: 'mortgage',
+      loanAmount: loan,
+      ltvPct: ltv,
+      insured,
+      insurancePremium,
+      principal,
+      stressTestRatePct: Math.round(stressTestRatePct * 100) / 100,
+      quotes: rows,
+      best: rows[0] ?? null,
+    };
+  }
+}
+
+/** Standard amortized monthly payment. Canadian fixed mortgages compound
+ * semi-annually, but for an illustrative mock we use simple monthly
+ * compounding — clearly labelled indicative, not a real amortization. */
+function amortizedPayment(principal: number, annualRatePct: number, months: number): number {
+  const r = annualRatePct / 100 / 12;
+  if (r === 0) return Math.round(principal / months);
+  const pmt = (principal * r) / (1 - Math.pow(1 + r, -months));
+  return Math.round(pmt);
 }

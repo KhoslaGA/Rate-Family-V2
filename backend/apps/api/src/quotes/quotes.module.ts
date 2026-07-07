@@ -4,6 +4,7 @@ import {
   LifeQuoteRequest,
   AutoQuoteRequest,
   HealthQuoteRequest,
+  MortgageQuoteRequest,
 } from '@ratefamily/contracts';
 import { MockCarrierAdapter } from '../mock/mock-carrier.adapter';
 
@@ -30,6 +31,11 @@ export class QuotesController {
   @Post('health')
   health(@Body() body: HealthQuoteRequest) {
     return this.adapter.quoteHealth(body);
+  }
+
+  @Post('mortgage')
+  mortgage(@Body() body: MortgageQuoteRequest) {
+    return this.adapter.quoteMortgage(body);
   }
 }
 

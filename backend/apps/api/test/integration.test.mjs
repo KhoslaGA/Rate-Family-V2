@@ -135,6 +135,29 @@ test('GET /v1/compare returns aligned rows', async () => {
   assert.ok(b.rows.every((row) => row.values.length === 2));
 });
 
+test('POST /v1/quotes/mortgage: 20% down → uninsured, lenders sorted best-first', async () => {
+  const body = { purpose: 'buy', rateType: 'fixed', term: '5', propertyPrice: 750000, downPayment: 150000, amortizationYears: 25 };
+  const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-tenant': 'termrates' }, body: JSON.stringify(body) };
+  const a = await (await fetch(`${BASE}/v1/quotes/mortgage`, opts)).json();
+  const b = await (await fetch(`${BASE}/v1/quotes/mortgage`, opts)).json();
+  assert.deepEqual(a, b, 'deterministic');
+  assert.equal(a.mock, true);
+  assert.equal(a.ltvPct, 80);
+  assert.equal(a.insured, false);
+  assert.equal(a.insurancePremium, 0);
+  for (let i = 1; i < a.quotes.length; i++) assert.ok(a.quotes[i].ratePct >= a.quotes[i - 1].ratePct);
+  assert.equal(a.best.lender, a.quotes[0].lender);
+});
+
+test('POST /v1/quotes/mortgage: 5% down → insured with CMHC premium + stress test', async () => {
+  const body = { purpose: 'buy', rateType: 'variable', term: '5', propertyPrice: 500000, downPayment: 25000, amortizationYears: 30 };
+  const b = await (await fetch(`${BASE}/v1/quotes/mortgage`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-tenant': 'termrates' }, body: JSON.stringify(body) })).json();
+  assert.equal(b.ltvPct, 95);
+  assert.equal(b.insured, true);
+  assert.ok(b.insurancePremium > 0);
+  assert.ok(b.stressTestRatePct >= 5.25, 'B-20 floor');
+});
+
 test('NO bind endpoint exists anywhere (regulated act — pre-RIBO)', async () => {
   // three plausible bind paths must all 404 — binding is never exposed
   for (const path of ['/v1/bind', '/v1/quotes/bind', '/go/bind']) {
