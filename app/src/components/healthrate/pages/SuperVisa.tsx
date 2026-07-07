@@ -6,6 +6,7 @@
 import { Badge, Bo, Button, Card, Eyebrow, FaqAccordion } from '../ds'
 import { HrPageHead, hrWrap } from '../parts'
 import { R } from '../data'
+import SuperVisaEligibilityCheck from './SuperVisaEligibilityCheck'
 
 const FACTS: [string, string, string][] = [
   ['Minimum coverage', '$100,000', 'Emergency medical coverage from a Canadian insurer (or an approved foreign insurer).'],
@@ -84,6 +85,14 @@ export default function SuperVisa() {
                 </div>
               ))}
             </Card>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '64px 0', background: 'var(--white)' }}>
+        <div style={hrWrap}>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            <SuperVisaEligibilityCheck guideHref={R.superVisaGuide} checklistHref={R.checklist} />
           </div>
         </div>
       </section>

@@ -1,28 +1,30 @@
-# Mortgage quoter patch — 8 files
+# Super Visa eligibility pre-check — patch (2 files)
 
-Unzip this INTO your Rate-Family-V2 folder (it mirrors the repo paths, so it
-overwrites the 8 changed files in place). From the repo root:
+Adds an interactive eligibility pre-check to the HealthRate Super Visa page,
+wired to POST /v1/quotes/health. COMPLIANCE: reads ONLY the eligibility
+signal — never premiums — so HealthRate stays education-only.
 
-    unzip -o mortgage-patch.zip
+## Apply (from repo root)
+    unzip -o supervisa-patch.zip
+    cd app && npx tsc --noEmit    # expect clean
+    cd ..
 
-Then:
+## Run to see it
+    node backend/apps/api/dist/main.js      # terminal 1
+    npm run dev:app                          # terminal 2 (or your usual)
+    # visit the HealthRate Super Visa page; the pre-check sits above the FAQ
 
-    npm run build:backend
-    npm run test:backend        # expect 17 pass
-    node backend/apps/api/dist/main.js   # you'll now see /v1/quotes/mortgage mapped
-
-Commit:
-
+## Commit
     git add .
-    git commit -m "Wire TermRates mortgage quoter to backend + fix dev script"
+    git commit -m "Add Super Visa eligibility pre-check (education-only, wired to /v1/quotes/health)"
     git push
 
-## Files changed
-- backend/packages/contracts/src/quotes.ts          (+ mortgage types)
-- backend/apps/api/src/mock/mock-carrier.adapter.ts (+ quoteMortgage)
-- backend/apps/api/src/quotes/quotes.module.ts      (+ /v1/quotes/mortgage route)
-- backend/apps/api/test/integration.test.mjs        (+ 2 mortgage tests)
-- app/src/components/termrates/TermRatesQuoter.tsx   (wired to API, async states)
-- app/src/lib/api/client.ts                          (+ quoteMortgage)
-- app/src/styles/termrates.css                       (+ pulse keyframe)
-- package.json                                       (dev:backend script fix)
+## Files
+- app/src/components/healthrate/pages/SuperVisaEligibilityCheck.tsx  (NEW)
+- app/src/components/healthrate/pages/SuperVisa.tsx                   (mounts it above FAQ)
+
+## Why eligibility-only
+The page states outright "Does HealthRate sell this insurance? No." So the
+widget shows "X of 6 insurers would consider this application" + routes to
+the guide/checklist. It discards the premium field the endpoint returns.
+Verified: grep finds zero premium reads in the component.
